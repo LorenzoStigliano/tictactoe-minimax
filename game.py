@@ -9,6 +9,7 @@ class Game:
 
         # Player X always plays first
         self.player_turn = 'X'
+        self.result = None
 
     def print_board(self):
         board = ""
@@ -36,17 +37,63 @@ class Game:
             self.player_turn = "X"
 
     def is_valid(self,x,y):
-        return self.current_state[x][y] == "."
+        if  (x<3 and x>-1 and y<3 and y>-1):
+            return self.current_state[x][y] == "."
+
+    def result_updater(self):
+        #check rows
+        for x in range(3):
+            if self.current_state[x] == ["X","X","X"]:
+                self.result = "X"
+            if self.current_state[x] == ["O","O","O"]:
+                self.result = "O"
+
+        #check columns
+
+        #check diagonals
+
+        #check if board is full
+
+    #def max(self):
+
+    #def min(self):
 
     def play_2_player(self):
 
         while True:
-            self.print_board()
-            print("It is " +self.player_turn+"'s turn.")
-            x = int(input("Please provide an x-coordinate: "))
-            y = int(input("Please provide an y-coordinate: "))
-            self.update_board(x,y)
-            self.update_player_turn()
+            self.result_updater()
+            if self.result != None:
+                print(self.result + "won the game!")
+            else:
+                print("It is " +self.player_turn+"'s turn.")
+                x = int(input("Please provide an x-coordinate: "))
+                y = int(input("Please provide an y-coordinate: "))
+                self.update_board(x,y)
+                self.update_player_turn()
+                self.print_board()
+
+
+    def play(self):
+
+        while True:
+            self.result()
+            if self.result != None:
+                print(self.result + "won the game!")
+            else:
+                if self.player_turn == "X":
+                    print("It is " +self.player_turn+"'s turn.")
+                    x = int(input("Please provide an x-coordinate: "))
+                    y = int(input("Please provide an y-coordinate: "))
+                    self.update_board(x,y)
+                    self.update_player_turn()
+                    self.print_board()
+                #AI Bot plays
+                else:
+                    print("Its the bot's turn.")
+                    #minimax check should return x and y
+                    self.update_board(x,y)
+                    self.update_player_turn()
+                    self.print_board()
 
 def main():
     g = Game()

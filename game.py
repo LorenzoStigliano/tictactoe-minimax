@@ -41,42 +41,74 @@ class Game:
             return self.current_state[x][y] == "."
 
     def result_updater(self):
-        #check rows
+        # Check rows
         for x in range(3):
             if self.current_state[x] == ["X","X","X"]:
                 self.result = "X"
+                return
             if self.current_state[x] == ["O","O","O"]:
                 self.result = "O"
+                return
+        # Check columns
+        for y in range(3):
+            column = []
+            for x in range(3):
+                column.append(self.current_state[x][y])
+            if column == ["O","O","O"]:
+                    self.result ="O"
+                    return
+            if column == ["X","X","X"]:
+                    self.result = "X"
+                    return
 
-        #check columns
+        # Check diagonals
+        # Main diagonal win
+        if (self.current_state[0][0] != '.' and
+        self.current_state[0][0] == self.current_state[1][1] and
+        self.current_state[0][0] == self.current_state[2][2]):
+            self.result = self.current_state[0][0]
+            return
 
-        #check diagonals
+        # Second diagonal win
+        if (self.current_state[0][2] != '.' and
+        self.current_state[0][2] == self.current_state[1][1] and
+        self.current_state[0][2] == self.current_state[2][0]):
+            self.result = self.current_state[0][2]
+            return
 
-        #check if board is full
+        # Check if board is full
+        for x in range(3):
+            for y in range(3):
+                if self.current_state[x][y] == ".":
+                    return
+        self.result = "D"
 
-    #def max(self):
+    def play_player(self):
 
-    #def min(self):
+        play = True
+        while play:
+            print("It is " +self.player_turn+"'s turn.")
+            x = int(input("Please provide an x-coordinate: "))
+            y = int(input("Please provide an y-coordinate: "))
+            self.update_board(x,y)
+            self.update_player_turn()
+            self.print_board()
+            self.result_updater()
+            if self.result != None:
+                if(self.result == "D"):
+                    print("Its a Draw!")
+                else:
+                    print(self.result + " won the game!")
+                play = False
 
-    def play_2_player(self):
+    #def best_move(self):
+
+    #def minimax(self,depth,isMaximising):
+
+    def play_bot(self):
 
         while True:
             self.result_updater()
-            if self.result != None:
-                print(self.result + "won the game!")
-            else:
-                print("It is " +self.player_turn+"'s turn.")
-                x = int(input("Please provide an x-coordinate: "))
-                y = int(input("Please provide an y-coordinate: "))
-                self.update_board(x,y)
-                self.update_player_turn()
-                self.print_board()
-
-
-    def play(self):
-
-        while True:
-            self.result()
             if self.result != None:
                 print(self.result + "won the game!")
             else:
@@ -87,7 +119,7 @@ class Game:
                     self.update_board(x,y)
                     self.update_player_turn()
                     self.print_board()
-                #AI Bot plays
+                #AI Bot plays is isMaximising player
                 else:
                     print("Its the bot's turn.")
                     #minimax check should return x and y
@@ -97,7 +129,7 @@ class Game:
 
 def main():
     g = Game()
-    g.play_2_player()
+    g.play_player()
 
 if __name__ == "__main__":
     main()

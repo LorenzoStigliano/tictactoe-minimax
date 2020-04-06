@@ -80,6 +80,7 @@ class Game:
         for x in range(3):
             for y in range(3):
                 if self.current_state[x][y] == ".":
+                    self.result = None
                     return
         self.result = "D"
 
@@ -101,16 +102,65 @@ class Game:
                     print(self.result + " won the game!")
                 play = False
 
-    #def best_move(self):
+    #AI implemataion
+    def best_move(self):
+        bestScore = -2
+        best_x = 0
+        best_y = 0
+        for x in range(3):
+            for y in range(3):
+                if self.current_state[x][y] == ".":
+                    self.current_state[x][y] = "O"
+                    score = self.minimax(False)
+                    self.current_state[x][y] = "."
+                    if score>bestScore:
+                        bestScore = score
+                        best_x = x
+                        best_y = y
+        return best_x, best_y
 
-    #def minimax(self,depth,isMaximising):
+    def minimax(self,isMaximising):
+        self.result_updater()
+        if self.result != None:
+            if self.result == "O":
+                return 1
+            elif self.result == "X":
+                return -1
+            else:
+                return 0
+
+        if isMaximising:
+            bestScore = -2
+            for x in range(3):
+                for y in range(3):
+                    if self.current_state[x][y] == ".":
+                        self.current_state[x][y] = "O"
+                        score = self.minimax(False)
+                        self.current_state[x][y] = "."
+                        bestScore = max(score,bestScore)
+            return bestScore
+
+        else:
+            bestScore = 2
+            for x in range(3):
+                for y in range(3):
+                    if self.current_state[x][y] == ".":
+                        self.current_state[x][y] = "X"
+                        score = self.minimax(True)
+                        self.current_state[x][y] = "."
+                        bestScore = min(score,bestScore)
+            return bestScore
 
     def play_bot(self):
 
         while True:
             self.result_updater()
-            if self.result != None:
-                print(self.result + "won the game!")
+            if self.result == "D":
+                print("Its a Draw!")
+                return
+            elif self.result != None:
+                print(self.result + " won the game!")
+                return
             else:
                 if self.player_turn == "X":
                     print("It is " +self.player_turn+"'s turn.")
@@ -122,14 +172,14 @@ class Game:
                 #AI Bot plays is isMaximising player
                 else:
                     print("Its the bot's turn.")
-                    #minimax check should return x and y
+                    x, y = self.best_move()
                     self.update_board(x,y)
                     self.update_player_turn()
                     self.print_board()
 
 def main():
     g = Game()
-    g.play_player()
+    g.play_bot()
 
 if __name__ == "__main__":
     main()
